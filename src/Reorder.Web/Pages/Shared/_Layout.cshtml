@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · Reorder Advisor</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" asp-page="/Index">📦 Reorder Advisor</a>
+        <nav>
+            <a asp-page="/Index">Action list</a>
+            <span class="muted" title="Coming on Day 8">Health summary</span>
+        </nav>
+    </header>
+
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <footer class="container muted">
+        Retail Reorder Advisor · ASP.NET Core on Azure App Service (Free tier)
+    </footer>
+</body>
+</html>

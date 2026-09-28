@@ -1,0 +1,201 @@
+sku,name,category,on_hand,unit_cost,supplier_id
+1001,Toilet Cleaner 500ml,Household,35,185.22,SUP-06
+1002,Filter Coffee 500ml,Beverages,11,226.41,SUP-02
+1003,Assam Tea 500ml,Beverages,21,91.31,SUP-02
+1004,Toothpaste 50ml,Personal Care,28,38.89,SUP-05
+1005,Soda Water 250ml,Beverages,9,57.89,SUP-02
+1006,Cream Biscuits 75g,Snacks,40,63.01,SUP-03
+1007,Glass Cleaner 2L,Household,13,505.12,SUP-06
+1008,Toor Dal 500g,Grocery,678,105.96,SUP-01
+1009,Green Tea 1L,Beverages,84,62.47,SUP-02
+1010,French Fries 500g,Frozen,12,339.15,SUP-07
+1011,Masala Peanuts 150g,Snacks,154,23.69,SUP-03
+1012,Aloo Bhujia 75g,Snacks,27,39.20,SUP-03
+1013,Toothpaste 100ml,Personal Care,19,160.98,SUP-05
+1014,Khakhra 75g,Snacks,113,88.31,SUP-03
+1015,Butter 200g,Dairy,101,60.72,SUP-04
+1016,Nachos 150g,Snacks,33,49.22,SUP-03
+1017,Face Wash 200ml,Personal Care,7,284.53,SUP-05
+1018,Besan 500g,Grocery,178,134.10,SUP-01
+1019,Sweet Corn 1kg,Frozen,15,305.65,SUP-07
+1020,Hand Wash 50ml,Personal Care,10,157.77,SUP-05
+1021,Ghee 500g,Dairy,24,200.64,SUP-04
+1022,Coconut Water 1L,Beverages,51,429.59,SUP-02
+1023,Toor Dal 1kg,Grocery,9,101.41,SUP-01
+1024,Fabric Softener 500ml,Household,170,112.62,SUP-06
+1025,Chicken Sausages 200g,Frozen,822,210.14,SUP-07
+1026,Talc 200ml,Personal Care,429,381.74,SUP-05
+1027,Mango Juice 500ml,Beverages,19,137.45,SUP-02
+1028,Fabric Softener 2L,Household,8,495.82,SUP-06
+1029,Salted Chips 150g,Snacks,29,139.43,SUP-03
+1030,Baby Powder S,Baby Care,4,84.47,SUP-08
+1031,Wheat Atta 500g,Grocery,37,134.81,SUP-01
+1032,Talc 50ml,Personal Care,33,173.64,SUP-05
+1033,Nachos 75g,Snacks,64,84.76,SUP-03
+1034,Soda Water 500ml,Beverages,103,254.53,SUP-02
+1035,Rock Salt 5kg,Grocery,185,253.27,SUP-01
+1036,Detergent Powder 2L,Household,32,248.82,SUP-06
+1037,Mixed Veg 200g,Frozen,180,217.80,SUP-07
+1038,Cola 500ml,Beverages,23,122.49,SUP-02
+1039,Hand Wash 100ml,Personal Care,130,206.97,SUP-05
+1040,Chicken Sausages 500g,Frozen,7,454.00,SUP-07
+1041,Ice Cream Tub 200g,Frozen,46,216.58,SUP-07
+1042,Bath Soap 50ml,Personal Care,225,99.39,SUP-05
+1043,Poha 500g,Grocery,28,157.31,SUP-01
+1044,Lemon Drink 1L,Beverages,19,299.59,SUP-02
+1045,Rose Syrup 500ml,Beverages,49,113.20,SUP-02
+1046,Sweet Corn 500g,Frozen,26,280.18,SUP-07
+1047,Scrub Pads 2L,Household,57,434.37,SUP-06
+1048,Filter Coffee 1L,Beverages,33,166.12,SUP-02
+1049,Paneer 1kg,Dairy,7,280.87,SUP-04
+1050,Sweet Corn 200g,Frozen,67,206.50,SUP-07
+1051,Ghee 1kg,Dairy,12,123.99,SUP-04
+1052,Glass Cleaner 1L,Household,19,356.71,SUP-06
+1053,Choco Cookies 75g,Snacks,45,36.14,SUP-03
+1054,Toor Dal 5kg,Grocery,21,160.57,SUP-01
+1055,Scrub Pads 1L,Household,108,328.84,SUP-06
+1056,Detergent Powder 500ml,Household,106,58.90,SUP-06
+1057,Aloo Bhujia 150g,Snacks,191,104.66,SUP-03
+1058,Body Lotion 50ml,Personal Care,58,80.47,SUP-05
+1059,Veg Nuggets 500g,Frozen,12,150.89,SUP-07
+1060,Rose Syrup 250ml,Beverages,215,121.29,SUP-02
+1061,Cheese Slices 500g,Dairy,10,60.74,SUP-04
+1062,Sugar 5kg,Grocery,36,446.50,SUP-01
+1063,Face Wash 100ml,Personal Care,322,114.06,SUP-05
+1064,Sweet Lassi 500g,Dairy,27,82.94,SUP-04
+1065,Popcorn 400g,Snacks,39,121.05,SUP-03
+1066,Ice Cream Tub 1kg,Frozen,21,393.47,SUP-07
+1067,Choco Cookies 150g,Snacks,19,125.10,SUP-03
+1068,Dish Wash Liquid 1L,Household,482,198.64,SUP-06
+1069,Marie Biscuits 75g,Snacks,631,46.90,SUP-03
+1070,Aloo Tikki 200g,Frozen,43,168.23,SUP-07
+1071,Hand Wash 200ml,Personal Care,362,280.77,SUP-05
+1072,Toilet Cleaner 1L,Household,308,115.33,SUP-06
+1073,Floor Cleaner 2L,Household,40,353.42,SUP-06
+1074,Salted Chips 400g,Snacks,14,67.16,SUP-03
+1075,Baby Diapers L,Baby Care,15,173.99,SUP-08
+1076,Green Tea 500ml,Beverages,7,68.34,SUP-02
+1077,Wheat Atta 5kg,Grocery,64,258.22,SUP-01
+1078,Curd 500g,Dairy,33,57.30,SUP-04
+1079,Veg Nuggets 200g,Frozen,556,66.70,SUP-07
+1080,Toned Milk 1kg,Dairy,15,566.69,SUP-04
+1081,Rash Cream S,Baby Care,498,178.97,SUP-08
+1082,Rash Cream L,Baby Care,100,654.93,SUP-08
+1083,Popcorn 75g,Snacks,16,73.35,SUP-03
+1084,Rolled Oats 1kg,Grocery,10,263.00,SUP-01
+1085,French Fries 200g,Frozen,56,68.62,SUP-07
+1086,Besan 5kg,Grocery,110,325.51,SUP-01
+1087,Marie Biscuits 150g,Snacks,182,73.66,SUP-03
+1088,Fresh Cream 200g,Dairy,165,171.58,SUP-04
+1089,Toned Milk 500g,Dairy,85,163.08,SUP-04
+1090,Baby Diapers S,Baby Care,29,87.19,SUP-08
+1091,Masala Peanuts 400g,Snacks,47,73.62,SUP-03
+1092,Floor Cleaner 500ml,Household,129,83.06,SUP-06
+1093,Besan 1kg,Grocery,27,149.32,SUP-01
+1094,Khakhra 400g,Snacks,12,185.38,SUP-03
+1095,Curd 200g,Dairy,51,117.05,SUP-04
+1096,Cola 250ml,Beverages,18,115.53,SUP-02
+1097,Moong Dal 500g,Grocery,8,65.88,SUP-01
+1098,Baby Shampoo S,Baby Care,31,319.41,SUP-08
+1099,Baby Oil M,Baby Care,24,318.00,SUP-08
+1100,Dish Wash Liquid 2L,Household,9,118.04,SUP-06
+1101,Chicken Sausages 1kg,Frozen,36,332.01,SUP-07
+1102,Poha 1kg,Grocery,278,264.10,SUP-01
+1103,Shampoo 200ml,Personal Care,33,127.14,SUP-05
+1104,Room Freshener 1L,Household,39,259.10,SUP-06
+1105,Butter 500g,Dairy,49,328.31,SUP-04
+1106,Popcorn 150g,Snacks,20,118.03,SUP-03
+1107,Hair Oil 200ml,Personal Care,84,274.96,SUP-05
+1108,Hair Oil 100ml,Personal Care,20,202.37,SUP-05
+1109,Deodorant 200ml,Personal Care,10,153.70,SUP-05
+1110,Ice Cream Tub 500g,Frozen,14,376.99,SUP-07
+1111,Green Peas 1kg,Frozen,35,435.37,SUP-07
+1112,Baby Cereal M,Baby Care,9,131.71,SUP-08
+1113,Paneer 200g,Dairy,15,68.63,SUP-04
+1114,Buttermilk 500g,Dairy,26,263.92,SUP-04
+1115,Nachos 400g,Snacks,6,135.26,SUP-03
+1116,Basmati Rice 500g,Grocery,105,90.26,SUP-01
+1117,Mango Juice 250ml,Beverages,697,58.34,SUP-02
+1118,Shampoo 50ml,Personal Care,103,164.05,SUP-05
+1119,Moong Dal 1kg,Grocery,43,233.00,SUP-01
+1120,Fresh Cream 1kg,Dairy,224,267.32,SUP-04
+1121,Room Freshener 500ml,Household,72,137.79,SUP-06
+1122,Baby Soap L,Baby Care,25,380.73,SUP-08
+1123,Body Lotion 100ml,Personal Care,38,166.13,SUP-05
+1124,Paneer 500g,Dairy,69,162.60,SUP-04
+1125,Garbage Bags 1L,Household,85,167.52,SUP-06
+1126,Butter 1kg,Dairy,45,497.05,SUP-04
+1127,Marie Biscuits 400g,Snacks,90,62.60,SUP-03
+1128,Rolled Oats 500g,Grocery,11,68.19,SUP-01
+1129,Rose Syrup 1L,Beverages,15,434.64,SUP-02
+1130,Buttermilk 200g,Dairy,63,200.27,SUP-04
+1131,Baby Cereal L,Baby Care,10,380.52,SUP-08
+1132,Sweet Lassi 1kg,Dairy,27,189.68,SUP-04
+1133,Mango Juice 1L,Beverages,118,312.05,SUP-02
+1134,Moong Dal 5kg,Grocery,47,112.03,SUP-01
+1135,Fabric Softener 1L,Household,7,263.61,SUP-06
+1136,Baby Lotion S,Baby Care,73,194.17,SUP-08
+1137,Baby Shampoo M,Baby Care,24,422.44,SUP-08
+1138,Deodorant 50ml,Personal Care,296,123.11,SUP-05
+1139,Soda Water 1L,Beverages,13,396.93,SUP-02
+1140,Baby Shampoo L,Baby Care,41,841.58,SUP-08
+1141,Baby Soap M,Baby Care,12,208.26,SUP-08
+1142,Filter Coffee 250ml,Beverages,32,85.43,SUP-02
+1143,Baby Oil S,Baby Care,28,113.29,SUP-08
+1144,Cheese Slices 200g,Dairy,24,79.25,SUP-04
+1145,Bath Soap 200ml,Personal Care,68,357.81,SUP-05
+1146,Cheese Slices 1kg,Dairy,12,486.76,SUP-04
+1147,Baby Diapers M,Baby Care,7,596.67,SUP-08
+1148,Toilet Cleaner 2L,Household,22,231.96,SUP-06
+1149,Assam Tea 250ml,Beverages,68,159.24,SUP-02
+1150,Rock Salt 1kg,Grocery,568,190.81,SUP-01
+1151,Green Peas 200g,Frozen,152,155.12,SUP-07
+1152,Lemon Drink 500ml,Beverages,56,185.19,SUP-02
+1153,Sugar 500g,Grocery,138,97.91,SUP-01
+1154,Ghee 200g,Dairy,85,49.71,SUP-04
+1155,Deodorant 100ml,Personal Care,77,84.40,SUP-05
+1156,Green Tea 250ml,Beverages,11,34.07,SUP-02
+1157,Rock Salt 500g,Grocery,25,73.24,SUP-01
+1158,Buttermilk 1kg,Dairy,23,548.25,SUP-04
+1159,Garbage Bags 2L,Household,21,124.21,SUP-06
+1160,Frozen Parathas 500g,Frozen,153,142.93,SUP-07
+1161,Shampoo 100ml,Personal Care,21,253.20,SUP-05
+1162,Curd 1kg,Dairy,81,70.03,SUP-04
+1163,Baby Powder L,Baby Care,19,298.49,SUP-08
+1164,Sugar 1kg,Grocery,65,256.50,SUP-01
+1165,Dish Wash Liquid 500ml,Household,61,164.81,SUP-06
+1166,Mixed Veg 500g,Frozen,16,169.40,SUP-07
+1167,Floor Cleaner 1L,Household,0,321.40,SUP-06
+1168,Aloo Tikki 1kg,Frozen,42,579.92,SUP-07
+1169,Body Lotion 200ml,Personal Care,12,546.32,SUP-05
+1170,Face Wash 50ml,Personal Care,84,128.08,SUP-05
+1171,Fresh Cream 500g,Dairy,14,159.26,SUP-04
+1172,Glass Cleaner 500ml,Household,58,135.48,SUP-06
+1173,Baby Cereal S,Baby Care,20,158.52,SUP-08
+1174,Baby Soap S,Baby Care,42,115.52,SUP-08
+1175,Talc 100ml,Personal Care,12,262.43,SUP-05
+1176,Frozen Parathas 200g,Frozen,387,80.17,SUP-07
+1177,Frozen Parathas 1kg,Frozen,17,666.71,SUP-07
+1178,Basmati Rice 5kg,Grocery,31,214.35,SUP-01
+1179,Bath Soap 100ml,Personal Care,48,378.00,SUP-05
+1180,Rash Cream M,Baby Care,57,395.48,SUP-08
+1181,Baby Wipes L,Baby Care,13,779.31,SUP-08
+1182,Rolled Oats 5kg,Grocery,4,303.13,SUP-01
+1183,Toothpaste 200ml,Personal Care,118,477.44,SUP-05
+1184,Aloo Tikki 500g,Frozen,45,121.48,SUP-07
+1185,Lemon Drink 250ml,Beverages,33,21.20,SUP-02
+1186,Green Peas 500g,Frozen,339,412.03,SUP-07
+1187,Baby Oil L,Baby Care,4,355.01,SUP-08
+1188,Baby Wipes S,Baby Care,112,61.84,SUP-08
+1189,Baby Lotion L,Baby Care,39,857.83,SUP-08
+1190,Detergent Powder 1L,Household,116,112.44,SUP-06
+1191,Toned Milk 200g,Dairy,26,90.98,SUP-04
+1192,Mixed Veg 1kg,Frozen,11,320.90,SUP-07
+1193,Hair Oil 50ml,Personal Care,4,77.01,SUP-05
+1194,Salted Chips 75g,Snacks,68,29.71,SUP-03
+1195,Scrub Pads 500ml,Household,107,102.37,SUP-06
+1196,Room Freshener 2L,Household,52,376.70,SUP-06
+1197,Garbage Bags 500ml,Household,61,64.88,SUP-06
+1198,Wheat Atta 1kg,Grocery,9,337.49,SUP-01
+1199,Sweet Lassi 200g,Dairy,53,145.40,SUP-04
+1200,Veg Nuggets 1kg,Frozen,53,291.33,SUP-07

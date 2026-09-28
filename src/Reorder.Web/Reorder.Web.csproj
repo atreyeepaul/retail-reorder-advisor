@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>Reorder.Web</RootNamespace>
+    <UserSecretsId>908c4950-fedd-4475-b08b-44ddf0a1340c</UserSecretsId>
+    <!-- ASP0027: newer SDKs make Program public automatically; the explicit
+         partial declaration in Program.cs is kept so tests work on any SDK. -->
+    <NoWarn>$(NoWarn);ASP0027</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Reorder.Core\Reorder.Core.csproj" />
+  </ItemGroup>
+
+</Project>

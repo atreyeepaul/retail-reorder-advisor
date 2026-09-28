@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Console app: synthetic data generator (Day 1) and backtest harness (Day 5). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Reorder.DataGen</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Day 5: the backtest command references Reorder.Core directly.
+  <ItemGroup>
+    <ProjectReference Include="..\Reorder.Core\Reorder.Core.csproj" />
+  </ItemGroup>
+  -->
+
+</Project>

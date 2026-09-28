@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Pure business logic. Rule: no Azure or ASP.NET Core package references here, ever. -->
+  <PropertyGroup>
+    <RootNamespace>Reorder.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Reorder.Core.Tests" />
+  </ItemGroup>
+
+</Project>

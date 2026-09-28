@@ -1,0 +1,179 @@
+{
+  "seed": 42,
+  "startDate": "2026-06-01",
+  "historyEndDate": "2026-08-29",
+  "simulationEndDate": "2026-09-05",
+  "asOfDates": [
+    "2026-08-29",
+    "2026-08-30",
+    "2026-08-31",
+    "2026-09-01",
+    "2026-09-02",
+    "2026-09-03",
+    "2026-09-04",
+    "2026-09-05"
+  ],
+  "scenarios": {
+    "deadStock": [
+      "1014",
+      "1022",
+      "1077",
+      "1194",
+      "1195"
+    ],
+    "overstock": [
+      "1008",
+      "1025",
+      "1026",
+      "1060",
+      "1063",
+      "1068",
+      "1071",
+      "1072",
+      "1079",
+      "1081",
+      "1117",
+      "1120",
+      "1150",
+      "1151",
+      "1176"
+    ],
+    "plannedStockouts": [
+      {
+        "sku": "1002",
+        "targetDate": "2026-09-02"
+      },
+      {
+        "sku": "1007",
+        "targetDate": "2026-09-02"
+      },
+      {
+        "sku": "1029",
+        "targetDate": "2026-09-04"
+      },
+      {
+        "sku": "1041",
+        "targetDate": "2026-09-04"
+      },
+      {
+        "sku": "1052",
+        "targetDate": "2026-09-04"
+      },
+      {
+        "sku": "1083",
+        "targetDate": "2026-09-03"
+      },
+      {
+        "sku": "1095",
+        "targetDate": "2026-09-04"
+      },
+      {
+        "sku": "1096",
+        "targetDate": "2026-09-02"
+      },
+      {
+        "sku": "1135",
+        "targetDate": "2026-09-03"
+      },
+      {
+        "sku": "1156",
+        "targetDate": "2026-09-05"
+      }
+    ],
+    "demandSpike": [
+      "1005",
+      "1078",
+      "1097"
+    ]
+  },
+  "stockouts": [
+    {
+      "sku": "1005",
+      "date": "2026-08-30",
+      "cause": "demand-spike",
+      "leadTimeDays": 4,
+      "evaluableThreeDaysAhead": false
+    },
+    {
+      "sku": "1002",
+      "date": "2026-09-02",
+      "cause": "planned",
+      "leadTimeDays": 4,
+      "evaluableThreeDaysAhead": true
+    },
+    {
+      "sku": "1007",
+      "date": "2026-09-02",
+      "cause": "planned",
+      "leadTimeDays": 10,
+      "evaluableThreeDaysAhead": true
+    },
+    {
+      "sku": "1096",
+      "date": "2026-09-02",
+      "cause": "planned",
+      "leadTimeDays": 4,
+      "evaluableThreeDaysAhead": true
+    },
+    {
+      "sku": "1083",
+      "date": "2026-09-03",
+      "cause": "planned",
+      "leadTimeDays": 3,
+      "evaluableThreeDaysAhead": true
+    },
+    {
+      "sku": "1135",
+      "date": "2026-09-03",
+      "cause": "planned",
+      "leadTimeDays": 10,
+      "evaluableThreeDaysAhead": true
+    },
+    {
+      "sku": "1029",
+      "date": "2026-09-04",
+      "cause": "planned",
+      "leadTimeDays": 3,
+      "evaluableThreeDaysAhead": true
+    },
+    {
+      "sku": "1041",
+      "date": "2026-09-04",
+      "cause": "planned",
+      "leadTimeDays": 6,
+      "evaluableThreeDaysAhead": true
+    },
+    {
+      "sku": "1052",
+      "date": "2026-09-04",
+      "cause": "planned",
+      "leadTimeDays": 10,
+      "evaluableThreeDaysAhead": true
+    },
+    {
+      "sku": "1095",
+      "date": "2026-09-04",
+      "cause": "planned",
+      "leadTimeDays": 3,
+      "evaluableThreeDaysAhead": true
+    },
+    {
+      "sku": "1156",
+      "date": "2026-09-05",
+      "cause": "planned",
+      "leadTimeDays": 4,
+      "evaluableThreeDaysAhead": true
+    }
+  ],
+  "dirtyRowsInLatestFolder": {
+    "badQuantity": 32,
+    "duplicateKey": 40,
+    "futureDate": 2,
+    "malformedDate": 29,
+    "missingDate": 26,
+    "missingPrice": 28,
+    "negativeQuantity": 37,
+    "unknownSku": 38
+  },
+  "notes": "Stockout = first day on hand reaches 0 inside the simulation window. Success criterion: \u003E= 80% of evaluable stockouts flagged URGENT or STOCKOUT_RISK on an as-of date at least 3 days before the stockout."
+}

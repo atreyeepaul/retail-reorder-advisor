@@ -1,0 +1,34 @@
+# Build output
+bin/
+obj/
+publish/
+*.zip
+
+# IDEs
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.user
+*.suo
+
+# Test results / coverage
+TestResults/
+coverage*/
+*.coverage
+*.trx
+
+# Azurite local storage emulator files
+__azurite_db*
+__blobstorage__/
+__queuestorage__/
+__tablestorage__/
+
+# Local secrets and environment files
+*.env
+.env.*
+appsettings.*.local.json
+
+# OS
+Thumbs.db
+.DS_Store
