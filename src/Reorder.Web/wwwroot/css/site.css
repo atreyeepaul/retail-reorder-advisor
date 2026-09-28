@@ -53,3 +53,109 @@ a { color: var(--accent); }
 }
 
 .muted { color: var(--muted); }
+
+/* ---- Day 7: action-list dashboard ------------------------------------ */
+
+/* Theme-aware flag colors (light defaults, then dark overrides). */
+:root {
+    --flag-urgent: #c0392b;
+    --flag-stockout-risk: #b7791f;
+    --flag-dead-stock: #6b7280;
+    --flag-overstock: #2b6cb0;
+    --flag-healthy: #2f855a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --flag-urgent: #f0857d;
+        --flag-stockout-risk: #e8c07a;
+        --flag-dead-stock: #9aa3b2;
+        --flag-overstock: #6aa7e8;
+        --flag-healthy: #6ee7a8;
+    }
+}
+
+.caption { margin: 0.25rem 0 0.75rem; }
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 0.75rem 0;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.chip {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.chip:hover { border-color: var(--accent); }
+.chip.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip--low { padding: 0 0.4rem; font-size: 0.72rem; color: var(--muted); }
+
+.button {
+    display: inline-block;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.button:hover { opacity: 0.9; }
+
+.table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+table.recs { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+table.recs th,
+table.recs td {
+    text-align: left;
+    padding: 0.5rem 0.65rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+table.recs thead th {
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    cursor: pointer;
+    user-select: none;
+}
+
+table.recs thead th.sort-asc::after { content: " \25B2"; }
+table.recs thead th.sort-desc::after { content: " \25BC"; }
+table.recs tbody tr:hover { background: var(--bg); }
+table.recs td.reason { white-space: normal; min-width: 260px; color: var(--muted); }
+
+.badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge--urgent { color: var(--flag-urgent); }
+.badge--stockout-risk { color: var(--flag-stockout-risk); }
+.badge--dead-stock { color: var(--flag-dead-stock); }
+.badge--overstock { color: var(--flag-overstock); }
+.badge--healthy { color: var(--flag-healthy); }

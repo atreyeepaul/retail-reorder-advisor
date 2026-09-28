@@ -1,15 +1,95 @@
 @page
+@using System.Globalization
+@using Reorder.Core.Models
+@model IndexModel
 @{
     ViewData["Title"] = "Action list";
+    var flags = new[] { Flag.Urgent, Flag.StockoutRisk, Flag.DeadStock, Flag.Overstock, Flag.Healthy };
+    static string BadgeClass(Flag flag) => flag.ToCode().ToLowerInvariant().Replace('_', '-');
 }
 
 <h1>Today's action list</h1>
 
-<section class="card">
-    <p><strong>The pipeline hasn't run yet.</strong></p>
-    <p class="muted">
-        This page will show the ranked reorder recommendations once ingestion (Day 2)
-        and the advisor job (Day 4) are in place. The table itself arrives on Day 7.
+@if (Model.Summary is null)
+{
+    <section class="card">
+        <p><strong>The pipeline hasn't run yet.</strong></p>
+        <p class="muted">
+            Upload the daily CSVs and trigger the advisor job; the ranked reorder
+            recommendations will appear here.
+        </p>
+        <p>Health endpoint: <a href="/health">/health</a></p>
+    </section>
+}
+else
+{
+    var summary = Model.Summary;
+
+    <p class="muted caption">
+        As of <strong>@summary.AsOf</strong> · @summary.SkuCount SKUs ·
+        generated @summary.GeneratedAtUtc.UtcDateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) UTC
     </p>
-    <p>Health endpoint: <a href="/health">/health</a></p>
-</section>
+
+    <div class="toolbar">
+        <div class="chips">
+            <a class="chip @(Model.ActiveFlag is null ? "is-active" : null)" href="/">All (@summary.SkuCount)</a>
+            @foreach (var f in flags)
+            {
+                var code = f.ToCode();
+                var count = summary.CountsByFlag.TryGetValue(code, out var c) ? c : 0;
+                <a class="chip @(Model.ActiveFlag == code ? "is-active" : null)" href="/?flag=@code">@code (@count)</a>
+            }
+        </div>
+        <a class="button" href="/api/recommendations/export.csv?flag=@Model.ActiveFlag">Export CSV</a>
+    </div>
+
+    <div class="table-wrap">
+        <table id="recs" class="recs">
+            <thead>
+                <tr>
+                    <th data-sort="text">SKU</th>
+                    <th data-sort="text">Name</th>
+                    <th data-sort="num">On hand</th>
+                    <th data-sort="num">Days of cover</th>
+                    <th data-sort="num">Suggested qty</th>
+                    <th data-sort="text">Supplier</th>
+                    <th data-sort="text">Flag</th>
+                    <th data-sort="text">Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.Recommendations)
+                {
+                    var cover = r.DaysOfCover;
+                    <tr>
+                        <td>@r.Sku</td>
+                        <td>@r.Name</td>
+                        <td data-value="@r.OnHand">@r.OnHand</td>
+                        <td data-value="@(cover?.ToString("0.0", CultureInfo.InvariantCulture) ?? "")">
+                            @(cover is double d ? d.ToString("0.0", CultureInfo.InvariantCulture) : "—")
+                        </td>
+                        <td data-value="@r.SuggestedQty">@r.SuggestedQty</td>
+                        <td>@r.SupplierName</td>
+                        <td>
+                            <span class="badge badge--@BadgeClass(r.Flag)">@r.Flag.ToCode()</span>
+                            @if (r.Confidence == Confidence.Low)
+                            {
+                                <span class="chip chip--low" title="Low confidence: short history or no recent demand">Low</span>
+                            }
+                        </td>
+                        <td class="reason">@r.Reason</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.Recommendations.Count == 0)
+    {
+        <p class="muted">No recommendations match this filter.</p>
+    }
+}
+
+@section Scripts {
+    <script src="~/js/table.js" asp-append-version="true"></script>
+}

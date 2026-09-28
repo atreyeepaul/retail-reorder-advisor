@@ -37,4 +37,18 @@ public static class FlagExtensions
         Flag.Healthy => "HEALTHY",
         _ => throw new ArgumentOutOfRangeException(nameof(flag), flag, "Unknown flag"),
     };
+
+    /// <summary>Parse a screaming-snake code (case-insensitive) back to a <see cref="Flag"/>.</summary>
+    public static bool TryParse(string? code, out Flag flag)
+    {
+        switch (code?.Trim().ToUpperInvariant())
+        {
+            case "URGENT": flag = Flag.Urgent; return true;
+            case "STOCKOUT_RISK": flag = Flag.StockoutRisk; return true;
+            case "DEAD_STOCK": flag = Flag.DeadStock; return true;
+            case "OVERSTOCK": flag = Flag.Overstock; return true;
+            case "HEALTHY": flag = Flag.Healthy; return true;
+            default: flag = default; return false;
+        }
+    }
 }

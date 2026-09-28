@@ -46,7 +46,7 @@ public static class ReadEndpoints
 
         if (!string.IsNullOrWhiteSpace(flag))
         {
-            if (!TryParseFlag(flag, out var parsed))
+            if (!FlagExtensions.TryParse(flag, out var parsed))
             {
                 return Results.BadRequest(new { error = $"Unknown flag '{flag}'." });
             }
@@ -73,7 +73,7 @@ public static class ReadEndpoints
         IEnumerable<Recommendation> recs = result.Recommendations;
         if (!string.IsNullOrWhiteSpace(flag))
         {
-            if (!TryParseFlag(flag, out var parsed))
+            if (!FlagExtensions.TryParse(flag, out var parsed))
             {
                 return Results.BadRequest(new { error = $"Unknown flag '{flag}'." });
             }
@@ -120,19 +120,6 @@ public static class ReadEndpoints
         }
 
         return writer.ToString();
-    }
-
-    private static bool TryParseFlag(string value, out Flag flag)
-    {
-        switch (value.Trim().ToUpperInvariant())
-        {
-            case "URGENT": flag = Flag.Urgent; return true;
-            case "STOCKOUT_RISK": flag = Flag.StockoutRisk; return true;
-            case "DEAD_STOCK": flag = Flag.DeadStock; return true;
-            case "OVERSTOCK": flag = Flag.Overstock; return true;
-            case "HEALTHY": flag = Flag.Healthy; return true;
-            default: flag = default; return false;
-        }
     }
 
     // Default order is the ranking already baked into latest.json (severity, then days of cover).
