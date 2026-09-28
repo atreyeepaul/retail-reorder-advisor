@@ -11,7 +11,7 @@ namespace Reorder.Web.Services;
 /// Runs one ingestion: stores the raw uploads, validates all three CSVs, writes the quarantine
 /// report, and — unless the sales reject ratio exceeds the threshold — the normalized dataset.
 /// </summary>
-public sealed class IngestionService(IBlobStore blobs, IOptions<AdvisorOptions> options)
+public sealed class IngestionService(IBlobStore blobs, IOptions<AdvisorOptions> options, INotifier notifier)
 {
     private const int RejectsSampleSize = 50;
     private readonly AdvisorOptions _options = options.Value;
@@ -51,7 +51,16 @@ public sealed class IngestionService(IBlobStore blobs, IOptions<AdvisorOptions> 
             JsonSerializer.Serialize(quarantine, IngestionJsonContext.Default.QuarantineReport), ct: ct);
 
         bool aborted = salesResult.ExceedsThreshold(_options.MaxRejectRatio);
-        if (!aborted)
+        if (aborted)
+        {
+            // Too many sales rows rejected: keep the previous latest.json and alert instead of a digest.
+            await notifier.PostAlertAsync(
+                new IngestionAlert(
+                    asOf, salesResult.Total, salesResult.Rejected.Count,
+                    salesResult.RejectRatio, _options.MaxRejectRatio),
+                ct);
+        }
+        else
         {
             var dataset = new NormalizedDataset(
                 asOf, DateTimeOffset.UtcNow,

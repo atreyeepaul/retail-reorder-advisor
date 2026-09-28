@@ -1,6 +1,9 @@
+using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.WebEncoders;
 using Reorder.Core;
 using Reorder.Web.Endpoints;
 using Reorder.Web.Infrastructure;
@@ -11,6 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 // ---- Services -------------------------------------------------------------
 builder.Services.AddRazorPages();
 builder.Services.AddHealthChecks().AddCheck<BlobHealthCheck>("blob");   // Day 6: blob-reachability probe
+
+// Emit non-ASCII text (₹, ·, —, non-Latin names) as literal UTF-8 in HTML instead of numeric
+// entities. Dangerous ASCII (<, >, &, quotes) is still encoded, so this stays XSS-safe.
+builder.Services.Configure<WebEncoderOptions>(o =>
+    o.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
 
 builder.Services
     .AddOptions<AdvisorOptions>()
@@ -24,6 +32,11 @@ builder.Services.Configure<SecurityOptions>(builder.Configuration.GetSection(Sec
 builder.Services.AddSingleton<IBlobStore, BlobStore>();   // BlobServiceClient is thread-safe
 builder.Services.AddScoped<IngestionService>();
 builder.Services.AddScoped<AdvisorJob>();   // Day 4: runs the advisor and writes latest.json
+
+// Notifications (Day 8): Teams webhook digest after a run, alert on aborted ingestion.
+// A no-op when Notifications:WebhookUrl is empty, so dev/test runs post nowhere.
+builder.Services.Configure<NotificationsOptions>(builder.Configuration.GetSection(NotificationsOptions.SectionName));
+builder.Services.AddHttpClient<INotifier, WebhookNotifier>(c => c.Timeout = TimeSpan.FromSeconds(10));
 
 // Read side (Day 6): cache the latest advisor output for the read endpoints and dashboard.
 builder.Services.AddMemoryCache();

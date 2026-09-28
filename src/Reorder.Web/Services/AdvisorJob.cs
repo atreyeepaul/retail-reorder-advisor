@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Reorder.Core;
 using Reorder.Core.Advisor;
 using Reorder.Core.Ingestion;
+using Reorder.Core.Models;
 using Reorder.Web.Infrastructure;
 
 namespace Reorder.Web.Services;
@@ -14,7 +15,8 @@ namespace Reorder.Web.Services;
 /// <see cref="AdvisorEngine"/>, and writes the dated snapshot plus <c>recommendations/latest.json</c>.
 /// </summary>
 public sealed class AdvisorJob(
-    IBlobStore blobs, IOptions<AdvisorOptions> options, RecommendationCache cache, ILogger<AdvisorJob> logger)
+    IBlobStore blobs, IOptions<AdvisorOptions> options, RecommendationCache cache, INotifier notifier,
+    ILogger<AdvisorJob> logger)
 {
     private const string LockPath = "advisor.lock";
     private static readonly TimeSpan LeaseDuration = TimeSpan.FromSeconds(60);
@@ -77,6 +79,11 @@ public sealed class AdvisorJob(
                 "AdvisorRunCompleted asOf={AsOf} skuCount={SkuCount} countsByFlag={CountsByFlag} quarantinedRows={QuarantinedRows} durationMs={DurationMs}",
                 summary.AsOf, summary.SkuCount, FormatCounts(summary.CountsByFlag),
                 summary.QuarantinedRows, summary.RunDurationMs);
+
+            // Best-effort digest to Teams. The notifier no-ops when unconfigured and never throws,
+            // so a webhook problem can't fail an otherwise-successful run.
+            var urgentTop5 = final.Recommendations.Where(r => r.Flag == Flag.Urgent).Take(5).ToList();
+            await notifier.PostDigestAsync(summary, urgentTop5, ct);
 
             return AdvisorRunOutcome.Ok(summary);
         }
