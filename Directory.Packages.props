@@ -4,6 +4,12 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
+  <ItemGroup Label="Ingestion &amp; storage (Day 2)">
+    <PackageVersion Include="CsvHelper" Version="33.1.0" />
+    <PackageVersion Include="Azure.Storage.Blobs" Version="12.29.2" />
+    <PackageVersion Include="Azure.Identity" Version="1.21.0" />
+  </ItemGroup>
+
   <ItemGroup Label="Testing">
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
@@ -13,6 +19,5 @@
   </ItemGroup>
 
   <!-- Added on later days:
-       Day 2: Azure.Storage.Blobs, Azure.Identity, CsvHelper
        Day 5: Azure.Monitor.OpenTelemetry.AspNetCore -->
 </Project>

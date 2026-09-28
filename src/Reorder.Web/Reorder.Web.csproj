@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="Azure.Storage.Blobs" />
+    <PackageReference Include="Azure.Identity" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Reorder.Core\Reorder.Core.csproj" />
   </ItemGroup>
 

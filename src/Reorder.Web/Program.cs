@@ -1,4 +1,9 @@
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Features;
 using Reorder.Core;
+using Reorder.Web.Endpoints;
+using Reorder.Web.Infrastructure;
+using Reorder.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +16,20 @@ builder.Services
     .Bind(builder.Configuration.GetSection(AdvisorOptions.SectionName))
     .ValidateDataAnnotations()
     .ValidateOnStart();                // bad config fails fast at startup, not mid-run
+
+// Ingestion (Day 2): blob storage + CSV validation.
+builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection(StorageOptions.SectionName));
+builder.Services.Configure<SecurityOptions>(builder.Configuration.GetSection(SecurityOptions.SectionName));
+builder.Services.AddSingleton<IBlobStore, BlobStore>();   // BlobServiceClient is thread-safe
+builder.Services.AddScoped<IngestionService>();
+
+// Cap the multipart upload of the three CSVs at 10 MB.
+builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10 * 1024 * 1024);
+
+// Emit reject reasons as their string codes (e.g. "DUPLICATE_KEY") in JSON responses,
+// matching the quarantine blob.
+builder.Services.ConfigureHttpJsonOptions(o =>
+    o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // ---- Pipeline -------------------------------------------------------------
 var app = builder.Build();
@@ -28,8 +47,9 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapHealthChecks("/health");
 
+app.MapUploadEndpoints(app.Configuration["Security:AdminKey"] ?? string.Empty);
+
 // Endpoints added on later days:
-//   Day 2  POST /api/uploads
 //   Day 4  POST /api/jobs/run-advisor
 //   Day 6  GET  /api/summary, /api/recommendations, /api/recommendations/export.csv
 
