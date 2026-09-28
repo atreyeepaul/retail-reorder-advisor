@@ -13,7 +13,8 @@ namespace Reorder.Web.Services;
 /// Runs one advisor pass: under a blob-lease lock, loads the normalized dataset, runs the pure
 /// <see cref="AdvisorEngine"/>, and writes the dated snapshot plus <c>recommendations/latest.json</c>.
 /// </summary>
-public sealed class AdvisorJob(IBlobStore blobs, IOptions<AdvisorOptions> options, ILogger<AdvisorJob> logger)
+public sealed class AdvisorJob(
+    IBlobStore blobs, IOptions<AdvisorOptions> options, RecommendationCache cache, ILogger<AdvisorJob> logger)
 {
     private const string LockPath = "advisor.lock";
     private static readonly TimeSpan LeaseDuration = TimeSpan.FromSeconds(60);
@@ -70,6 +71,7 @@ public sealed class AdvisorJob(IBlobStore blobs, IOptions<AdvisorOptions> option
             string json = JsonSerializer.Serialize(final, AdvisorJsonContext.Default.RunResult);
             await blobs.WriteTextAsync(Containers.Recommendations, $"{asOfStr}.json", json, ct: ct);
             await blobs.WriteTextAsync(Containers.Recommendations, "latest.json", json, ct: ct);
+            cache.Invalidate();   // serve the fresh run on the next read
 
             logger.LogInformation(
                 "AdvisorRunCompleted asOf={AsOf} skuCount={SkuCount} countsByFlag={CountsByFlag} quarantinedRows={QuarantinedRows} durationMs={DurationMs}",

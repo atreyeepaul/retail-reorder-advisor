@@ -65,6 +65,15 @@ public sealed class BlobStore : IBlobStore
         return await blob.ExistsAsync(ct);
     }
 
+    public async Task<bool> PingAsync(CancellationToken ct = default)
+    {
+        // Lightweight reachability check: ask whether the recommendations container exists.
+        // Answers true when the service responds (even if the container is absent); a network
+        // failure throws, which the health check treats as unhealthy.
+        await _service.GetBlobContainerClient(Containers.Recommendations).ExistsAsync(ct);
+        return true;
+    }
+
     public async Task<IReadOnlyList<string>> ListAsync(string container, CancellationToken ct = default)
     {
         var client = await GetContainerAsync(container, ct);

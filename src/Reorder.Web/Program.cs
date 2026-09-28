@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ---- Services -------------------------------------------------------------
 builder.Services.AddRazorPages();
-builder.Services.AddHealthChecks();   // Day 6 adds a blob-reachability check
+builder.Services.AddHealthChecks().AddCheck<BlobHealthCheck>("blob");   // Day 6: blob-reachability probe
 
 builder.Services
     .AddOptions<AdvisorOptions>()
@@ -24,6 +24,10 @@ builder.Services.Configure<SecurityOptions>(builder.Configuration.GetSection(Sec
 builder.Services.AddSingleton<IBlobStore, BlobStore>();   // BlobServiceClient is thread-safe
 builder.Services.AddScoped<IngestionService>();
 builder.Services.AddScoped<AdvisorJob>();   // Day 4: runs the advisor and writes latest.json
+
+// Read side (Day 6): cache the latest advisor output for the read endpoints and dashboard.
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<RecommendationCache>();
 
 // Cap the multipart upload of the three CSVs at 10 MB.
 builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10 * 1024 * 1024);
@@ -64,9 +68,7 @@ app.MapHealthChecks("/health");
 
 app.MapUploadEndpoints(app.Configuration["Security:AdminKey"] ?? string.Empty);
 app.MapJobEndpoints(app.Configuration["Security:JobKey"] ?? string.Empty);
-
-// Endpoints added on later days:
-//   Day 6  GET  /api/summary, /api/recommendations, /api/recommendations/export.csv
+app.MapReadEndpoints();
 
 app.Run();
 

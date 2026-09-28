@@ -9,6 +9,9 @@ public sealed class InMemoryBlobStore : IBlobStore
     private readonly ConcurrentDictionary<string, string> _blobs = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, byte> _leases = new(StringComparer.Ordinal);
 
+    /// <summary>Toggle to simulate storage being unreachable for the health-probe test.</summary>
+    public bool BlobReachable { get; set; } = true;
+
     public Task SaveRawAsync(string asOf, string fileName, Stream content, CancellationToken ct = default)
     {
         using var reader = new StreamReader(content);
@@ -46,6 +49,8 @@ public sealed class InMemoryBlobStore : IBlobStore
         IBlobLease? lease = _leases.TryAdd(key, 0) ? new Lease(this, key) : null;
         return Task.FromResult(lease);
     }
+
+    public Task<bool> PingAsync(CancellationToken ct = default) => Task.FromResult(BlobReachable);
 
     public bool Has(string container, string path) => _blobs.ContainsKey(Key(container, path));
 

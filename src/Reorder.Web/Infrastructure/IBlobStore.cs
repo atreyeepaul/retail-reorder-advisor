@@ -28,6 +28,9 @@ public interface IBlobStore
     /// </summary>
     Task<IBlobLease?> TryAcquireLeaseAsync(
         string container, string path, TimeSpan duration, CancellationToken ct = default);
+
+    /// <summary>Reachability probe for the health check: true when storage answers, else false/throws.</summary>
+    Task<bool> PingAsync(CancellationToken ct = default);
 }
 
 /// <summary>A held blob lease; disposing releases it.</summary>

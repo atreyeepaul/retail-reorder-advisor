@@ -1,10 +1,9 @@
 using System.Net;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Reorder.Web.Tests;
 
-public sealed class SmokeTests(WebApplicationFactory<Program> factory)
-    : IClassFixture<WebApplicationFactory<Program>>
+// Uses the in-memory blob fake so the /health blob probe passes without Azurite.
+public sealed class SmokeTests(IngestionAppFactory factory) : IClassFixture<IngestionAppFactory>
 {
     [Fact]
     public async Task Health_endpoint_returns_healthy()
