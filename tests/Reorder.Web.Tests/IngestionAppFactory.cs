@@ -14,12 +14,14 @@ namespace Reorder.Web.Tests;
 public sealed class IngestionAppFactory : WebApplicationFactory<Program>
 {
     public const string AdminKey = "test-admin-key";
+    public const string JobKey = "test-job-key";
 
     public InMemoryBlobStore Blobs { get; } = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting("Security:AdminKey", AdminKey);
+        builder.UseSetting("Security:JobKey", JobKey);
         builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<IBlobStore>();

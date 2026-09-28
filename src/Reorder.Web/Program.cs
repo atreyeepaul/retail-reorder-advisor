@@ -22,6 +22,7 @@ builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection(Stor
 builder.Services.Configure<SecurityOptions>(builder.Configuration.GetSection(SecurityOptions.SectionName));
 builder.Services.AddSingleton<IBlobStore, BlobStore>();   // BlobServiceClient is thread-safe
 builder.Services.AddScoped<IngestionService>();
+builder.Services.AddScoped<AdvisorJob>();   // Day 4: runs the advisor and writes latest.json
 
 // Cap the multipart upload of the three CSVs at 10 MB.
 builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10 * 1024 * 1024);
@@ -48,9 +49,9 @@ app.MapRazorPages();
 app.MapHealthChecks("/health");
 
 app.MapUploadEndpoints(app.Configuration["Security:AdminKey"] ?? string.Empty);
+app.MapJobEndpoints(app.Configuration["Security:JobKey"] ?? string.Empty);
 
 // Endpoints added on later days:
-//   Day 4  POST /api/jobs/run-advisor
 //   Day 6  GET  /api/summary, /api/recommendations, /api/recommendations/export.csv
 
 app.Run();

@@ -1,7 +1,9 @@
 using System.Collections.Concurrent;
+using Azure;
 using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 using Microsoft.Extensions.Options;
 
 namespace Reorder.Web.Infrastructure;
@@ -61,6 +63,65 @@ public sealed class BlobStore : IBlobStore
     {
         var blob = _service.GetBlobContainerClient(container).GetBlobClient(path);
         return await blob.ExistsAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<string>> ListAsync(string container, CancellationToken ct = default)
+    {
+        var client = await GetContainerAsync(container, ct);
+        var names = new List<string>();
+        await foreach (var item in client.GetBlobsAsync(cancellationToken: ct))
+        {
+            names.Add(item.Name);
+        }
+
+        return names;
+    }
+
+    public async Task<IBlobLease?> TryAcquireLeaseAsync(
+        string container, string path, TimeSpan duration, CancellationToken ct = default)
+    {
+        var client = await GetContainerAsync(container, ct);
+        var blob = client.GetBlobClient(path);
+
+        // The lock blob must exist before it can be leased; create an empty one if needed.
+        if (!await blob.ExistsAsync(ct))
+        {
+            try
+            {
+                await blob.UploadAsync(BinaryData.FromString(string.Empty), overwrite: false, ct);
+            }
+            catch (RequestFailedException e) when (e.Status == 409)
+            {
+                // Created concurrently — fine, we only need it to exist.
+            }
+        }
+
+        var lease = blob.GetBlobLeaseClient();
+        try
+        {
+            await lease.AcquireAsync(duration, cancellationToken: ct);
+        }
+        catch (RequestFailedException e) when (e.Status == 409)
+        {
+            return null;   // already leased → a run is in progress
+        }
+
+        return new BlobLease(lease);
+    }
+
+    private sealed class BlobLease(BlobLeaseClient lease) : IBlobLease
+    {
+        public async ValueTask DisposeAsync()
+        {
+            try
+            {
+                await lease.ReleaseAsync();
+            }
+            catch (RequestFailedException)
+            {
+                // Lease already expired or released — nothing to do.
+            }
+        }
     }
 
     // Containers exist in Azure (created by Bicep); locally against Azurite they must be created.

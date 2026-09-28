@@ -18,7 +18,20 @@ public interface IBlobStore
 
     /// <summary>True when a blob exists at <paramref name="path"/> in <paramref name="container"/>.</summary>
     Task<bool> ExistsAsync(string container, string path, CancellationToken ct = default);
+
+    /// <summary>The blob paths (names) present in <paramref name="container"/>.</summary>
+    Task<IReadOnlyList<string>> ListAsync(string container, CancellationToken ct = default);
+
+    /// <summary>
+    /// Try to take an exclusive lease on a blob (creating it if absent). Returns a handle that
+    /// releases the lease when disposed, or <c>null</c> when the blob is already leased.
+    /// </summary>
+    Task<IBlobLease?> TryAcquireLeaseAsync(
+        string container, string path, TimeSpan duration, CancellationToken ct = default);
 }
+
+/// <summary>A held blob lease; disposing releases it.</summary>
+public interface IBlobLease : IAsyncDisposable;
 
 /// <summary>The five blob containers provisioned by the Bicep infrastructure.</summary>
 public static class Containers
