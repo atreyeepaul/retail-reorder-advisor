@@ -72,12 +72,17 @@ public sealed class AdvisorJob(IBlobStore blobs, IOptions<AdvisorOptions> option
             await blobs.WriteTextAsync(Containers.Recommendations, "latest.json", json, ct: ct);
 
             logger.LogInformation(
-                "AdvisorRunCompleted asOf={AsOf} skuCount={SkuCount} quarantinedRows={QuarantinedRows} durationMs={DurationMs}",
-                summary.AsOf, summary.SkuCount, summary.QuarantinedRows, summary.RunDurationMs);
+                "AdvisorRunCompleted asOf={AsOf} skuCount={SkuCount} countsByFlag={CountsByFlag} quarantinedRows={QuarantinedRows} durationMs={DurationMs}",
+                summary.AsOf, summary.SkuCount, FormatCounts(summary.CountsByFlag),
+                summary.QuarantinedRows, summary.RunDurationMs);
 
             return AdvisorRunOutcome.Ok(summary);
         }
     }
+
+    // Flatten counts-by-flag to a compact string so it lands as one App Insights custom dimension.
+    private static string FormatCounts(IReadOnlyDictionary<string, int> counts) =>
+        string.Join(" ", counts.Select(kv => $"{kv.Key}={kv.Value}"));
 
     // Picks the newest normalized/{yyyy-MM-dd}.json when no explicit asOf is given.
     private async Task<string?> FindLatestAsOfAsync(CancellationToken ct)

@@ -10,6 +10,10 @@
     <PackageVersion Include="Azure.Identity" Version="1.21.0" />
   </ItemGroup>
 
+  <ItemGroup Label="Telemetry (Day 5)">
+    <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.6.0" />
+  </ItemGroup>
+
   <ItemGroup Label="Testing">
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
@@ -18,6 +22,4 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0" />
   </ItemGroup>
 
-  <!-- Added on later days:
-       Day 5: Azure.Monitor.OpenTelemetry.AspNetCore -->
 </Project>

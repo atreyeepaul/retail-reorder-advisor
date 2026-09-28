@@ -15,7 +15,7 @@ internal static class Cli
 
         Usage:
           dotnet run --project src/Reorder.DataGen -- generate [options]
-          dotnet run --project src/Reorder.DataGen -- backtest            (Day 5)
+          dotnet run --project src/Reorder.DataGen -- backtest [options]
 
         Options for generate:
           --out <dir>            Output directory                  (default: data)
@@ -25,6 +25,9 @@ internal static class Cli
           --sim-days <int>       Simulation days, 4–60             (default: 7)
           --start <yyyy-MM-dd>   First history date                (default: 2026-06-01)
           --dirty-rate <0-0.15>  Share of sales rows made dirty    (default: 0.015)
+
+        backtest takes the same options and must use the same seed/sizes as the generated
+        data. It reconstructs the dataset in memory and scores the advisor's early warnings.
         """;
 
     public static int Run(string[] args)
@@ -44,7 +47,7 @@ internal static class Cli
             return command switch
             {
                 "generate" => Generate(ParseGenerateOptions(rest)),
-                "backtest" => NotYet("backtest", "Day 5"),
+                "backtest" => Backtest.Run(ParseGenerateOptions(rest)),
                 _ => throw new CliException($"Unknown command '{command}'."),
             };
         }
@@ -143,12 +146,6 @@ internal static class Cli
         DateOnly.TryParseExact(value, "yyyy-MM-dd", Inv, DateTimeStyles.None, out var result)
             ? result
             : throw new CliException($"'{key}' expects a date as yyyy-MM-dd, got '{value}'.");
-
-    private static int NotYet(string command, string day)
-    {
-        Console.WriteLine($"The '{command}' command is implemented on {day}.");
-        return 0;
-    }
 
     private static string Fmt(DateOnly date) => date.ToString("yyyy-MM-dd", Inv);
 }

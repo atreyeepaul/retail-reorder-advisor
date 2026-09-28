@@ -6,10 +6,9 @@
     <RootNamespace>Reorder.DataGen</RootNamespace>
   </PropertyGroup>
 
-  <!-- Day 5: the backtest command references Reorder.Core directly.
+  <!-- Day 5: the backtest command references Reorder.Core directly. -->
   <ItemGroup>
     <ProjectReference Include="..\Reorder.Core\Reorder.Core.csproj" />
   </ItemGroup>
-  -->
 
 </Project>

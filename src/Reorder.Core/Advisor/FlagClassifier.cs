@@ -14,10 +14,10 @@ public static class FlagClassifier
     {
         double v = stats.Velocity;
 
-        // 1. DEAD_STOCK: stock on the shelf with no sale within the last DeadStockDays.
+        // 1. DEAD_STOCK: stock on the shelf that has sold before but not within the last
+        // DeadStockDays. A never-sold SKU (no LastSaleDate) is brand-new, not dead.
         var deadCutoff = asOf.AddDays(-options.DeadStockDays);
-        bool soldRecently = stats.LastSaleDate is DateOnly last && last > deadCutoff;
-        if (onHand > 0 && !soldRecently)
+        if (onHand > 0 && stats.LastSaleDate is DateOnly last && last <= deadCutoff)
         {
             return Flag.DeadStock;
         }

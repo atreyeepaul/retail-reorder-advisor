@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Http.Features;
 using Reorder.Core;
 using Reorder.Web.Endpoints;
@@ -31,6 +32,19 @@ builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 10 * 1
 // matching the quarantine blob.
 builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+// Telemetry (Day 5): OpenTelemetry → Application Insights. Registered only when a connection
+// string is present (Bicep sets it in Azure), so dev/test stay telemetry-free and integration
+// tests are unaffected. Live Metrics off; the distro's fixed-rate sampling stays on.
+var appInsightsConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+if (!string.IsNullOrWhiteSpace(appInsightsConnectionString))
+{
+    builder.Services.AddOpenTelemetry().UseAzureMonitor(o =>
+    {
+        o.ConnectionString = appInsightsConnectionString;
+        o.EnableLiveMetrics = false;
+    });
+}
 
 // ---- Pipeline -------------------------------------------------------------
 var app = builder.Build();
