@@ -1,0 +1,25 @@
+# One-command local run: the web app in a container, talking to an Azurite blob sidecar.
+#   docker compose up --build
+#   -> http://localhost:8080  (dashboard)  ·  http://localhost:8080/health
+# The live Azure site is unaffected; this is for local/portable runs only.
+
+services:
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
+    expose:
+      - "10000"
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - azurite
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      # Azurite's well-known, public dev account + key (safe to commit); only the Blob endpoint is used.
+      Storage__ConnectionString: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;"
+      # Demo keys so the write endpoints accept uploads/runs (empty keys return 401).
+      Security__AdminKey: "dev"
+      Security__JobKey: "dev"

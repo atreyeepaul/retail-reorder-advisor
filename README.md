@@ -127,6 +127,26 @@ endpoints below, or with `./scripts/simulate-7-days.ps1 -BaseUrl http://localhos
 
 The dashboards are the **action list** (`/`) and the **health summary** (`/health-summary`).
 
+## Run in Docker
+
+The app ships with a multi-stage [`Dockerfile`](Dockerfile). [`docker-compose.yml`](docker-compose.yml) runs it
+next to an Azurite blob sidecar, so one command gives you the full app in a container:
+
+```powershell
+docker compose up --build
+# http://localhost:8080  (dashboard)   ·   http://localhost:8080/health
+```
+
+Drive it end-to-end (uploads + advisor runs) against the container:
+
+```powershell
+./scripts/simulate-7-days.ps1 -BaseUrl http://localhost:8080 -AdminKey dev -JobKey dev
+```
+
+`docker compose down` stops it. The **live Azure site is unaffected** — App Service F1 runs the app on its
+built-in .NET runtime via zip deploy; the image is for local/portable runs and could be pushed to a registry and
+run on App Service for Containers (a paid tier).
+
 ## Deploy and tear down
 
 ```powershell

@@ -1,0 +1,27 @@
+# Keep the build context small and reproducible: only src/ + the build config files are needed.
+**/bin/
+**/obj/
+publish/
+.git/
+.github/
+.vs/
+.vscode/
+.idea/
+tests/
+docs/
+data/
+infra/
+scripts/
+**/*.md
+**/*.user
+.env
+.env.*
+__azurite*
+__blobstorage__/
+__queuestorage__/
+__tablestorage__/
+TestResults/
+coverage*/
+Dockerfile
+.dockerignore
+docker-compose.yml
