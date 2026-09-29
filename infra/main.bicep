@@ -195,6 +195,12 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
           name: 'Notifications__WebhookUrl'
           value: webhookUrl
         }
+        {
+          // The app's own public URL — used for the "Open dashboard" action in the Teams digest.
+          // Built from webAppName (not webApp.properties) to avoid a self-reference inside the resource.
+          name: 'Notifications__DashboardUrl'
+          value: 'https://${webAppName}.azurewebsites.net'
+        }
       ]
     }
   }

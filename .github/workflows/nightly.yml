@@ -1,0 +1,25 @@
+name: Nightly advisor run
+
+on:
+  schedule:
+    # 20:30 UTC = 02:00 IST. GitHub may start scheduled runs several minutes late.
+    - cron: '30 20 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-advisor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger the advisor
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          JOB_KEY: ${{ secrets.JOB_KEY }}
+        # --retry covers the F1 cold start; --fail-with-body fails the job on any non-2xx.
+        run: |
+          curl -X POST "$APP_URL/api/jobs/run-advisor" \
+            -H "X-Job-Key: $JOB_KEY" \
+            --fail-with-body --show-error --silent \
+            --retry 5 --retry-all-errors --max-time 120

@@ -8,7 +8,7 @@ reorder-point calculation instead of gut feel.
 Bicep · GitHub Actions. Designed to run at effectively zero cost on an Azure free account.
 
 > 🚧 In progress: 10-day build. See [`docs/implementation-plan.md`](docs/implementation-plan.md)
-> for the full plan and [`docs/day-01.md`](docs/day-01.md) for today's steps.
+> for the full plan and [`docs/day-09.md`](docs/day-09.md) for the CI/CD setup.
 
 ## Repository layout
 
@@ -40,17 +40,27 @@ az login
 ./scripts/teardown.ps1        # deletes everything
 ```
 
+## CI/CD
+
+Three GitHub Actions workflows (setup in [`docs/day-09.md`](docs/day-09.md)):
+
+- **CI** — restore, build (warnings as errors), test with coverage, and the backtest gate on every push and PR.
+- **Deploy** — on push to `main`, signs in to Azure with OIDC (no stored secrets), runs the Bicep + app deploy, and smoke-tests `/health`.
+- **Nightly** — a scheduled run at 02:00 IST triggers the advisor.
+
+Two scheduler caveats: GitHub can start scheduled runs several minutes late, and it disables scheduled workflows after 60 days of repository inactivity.
+
 ## Progress
 
 | Day | Focus | Status |
 |---|---|---|
 | 1 | Guardrails, skeleton, infrastructure, data generator | ✅ |
-| 2 | Ingestion and validation | ⬜ |
-| 3 | Advisor core (test-first) | ⬜ |
-| 4 | Advisor job end to end | ⬜ |
-| 5 | Edge cases, telemetry, backtest | ⬜ |
-| 6 | Read API | ⬜ |
-| 7 | Action list page | ⬜ |
-| 8 | Health summary and webhook | ⬜ |
-| 9 | CI/CD and reproducibility drill | ⬜ |
+| 2 | Ingestion and validation | ✅ |
+| 3 | Advisor core (test-first) | ✅ |
+| 4 | Advisor job end to end | ✅ |
+| 5 | Edge cases, telemetry, backtest | ✅ |
+| 6 | Read API | ✅ |
+| 7 | Action list page | ✅ |
+| 8 | Health summary and webhook | ✅ |
+| 9 | CI/CD and reproducibility drill | ✅ |
 | 10 | Simulation, docs, demo | ⬜ |
