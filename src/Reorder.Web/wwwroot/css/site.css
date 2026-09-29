@@ -201,3 +201,52 @@ table.recs td.reason { white-space: normal; min-width: 260px; color: var(--muted
 .seg--dead-stock { background: var(--flag-dead-stock); }
 .seg--overstock { background: var(--flag-overstock); }
 .seg--healthy { background: var(--flag-healthy); }
+
+/* ---- Upload page ------------------------------------------------------- */
+
+.form-card { max-width: 560px; margin-top: 1rem; }
+.form-card h2 { margin: 0 0 0.6rem; font-size: 1.15rem; }
+
+.field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.8rem; }
+.field label { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+.field input {
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.95rem;
+}
+.field input[type="file"] { padding: 0.35rem; }
+
+.result {
+    margin: 1rem 0;
+    max-width: 640px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+}
+
+.result--ok { border-color: var(--flag-healthy); }
+.result--warn { border-color: var(--flag-stockout-risk); }
+
+.pill {
+    display: inline-block;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Fixed (non-theme) fills so white pill text stays legible in both light and dark. */
+.pill--ok { background: #2f855a; }
+.pill--warn { background: #b7791f; }
+
+table.mini { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.9rem; }
+table.mini th, table.mini td { text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+table.mini th { color: var(--muted); font-weight: 600; }
+
+ul.rejects { margin: 0.25rem 0 0; padding-left: 1.1rem; font-size: 0.85rem; color: var(--muted); }
+ul.rejects code { color: var(--text); }

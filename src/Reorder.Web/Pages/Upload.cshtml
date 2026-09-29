@@ -1,0 +1,50 @@
+@page "/upload"
+@{
+    ViewData["Title"] = "Upload";
+}
+
+<h1>Upload &amp; run</h1>
+<p class="muted">
+    Upload a day's three CSVs, then run the advisor — all from here. Files go to the server; the keys are sent only
+    with your request and are never stored.
+</p>
+
+<section class="card form-card">
+    <div class="field">
+        <label for="asOf">As-of date</label>
+        <input type="date" id="asOf" value="2026-09-05" />
+    </div>
+    <div class="field">
+        <label for="adminKey">Admin key</label>
+        <input type="password" id="adminKey" autocomplete="off" placeholder="X-Admin-Key" />
+    </div>
+    <div class="field">
+        <label for="sales">Sales CSV</label>
+        <input type="file" id="sales" accept=".csv" />
+    </div>
+    <div class="field">
+        <label for="inventory">Inventory CSV</label>
+        <input type="file" id="inventory" accept=".csv" />
+    </div>
+    <div class="field">
+        <label for="suppliers">Suppliers CSV</label>
+        <input type="file" id="suppliers" accept=".csv" />
+    </div>
+    <button type="button" id="uploadBtn" class="button">Upload</button>
+</section>
+
+<div id="result" class="result" hidden></div>
+
+<section id="runCard" class="card form-card" hidden>
+    <h2>Run the advisor</h2>
+    <div class="field">
+        <label for="jobKey">Job key</label>
+        <input type="password" id="jobKey" autocomplete="off" placeholder="X-Job-Key" />
+    </div>
+    <button type="button" id="runBtn" class="button">Run advisor</button>
+    <div id="runResult" class="result" hidden></div>
+</section>
+
+@section Scripts {
+    <script src="~/js/upload.js" asp-append-version="true"></script>
+}
