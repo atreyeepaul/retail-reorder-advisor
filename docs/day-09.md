@@ -5,16 +5,34 @@ Three GitHub Actions workflows plus a from-scratch rebuild drill.
 | Workflow | Trigger | What it does |
 |---|---|---|
 | [`ci.yml`](../.github/workflows/ci.yml) | push to `main`, PRs, manual | restore → build (warnings = errors) → test with coverage → backtest gate (≥ 80%) |
-| [`deploy.yml`](../.github/workflows/deploy.yml) | push to `main`, manual | test → `azure/login` (OIDC) → `deploy-infra.ps1` (Bicep) → `deploy-app.ps1` → smoke-test `/health` |
+| [`deploy.yml`](../.github/workflows/deploy.yml) | push to `main`, manual | test → `dotnet publish` → deploy to App Service via **publish profile** → smoke-test `/health` (app code only) |
 | [`nightly.yml`](../.github/workflows/nightly.yml) | cron `30 20 * * *` (02:00 IST), manual | `POST /api/jobs/run-advisor` with `X-Job-Key`, retried for cold start |
 
-`ci.yml` and `nightly.yml` need **no** Azure identity. Only `deploy.yml` uses OIDC.
+None of the three needs Azure AD / OIDC. `deploy.yml` authenticates with the App Service **publish profile** (a
+per-app credential), so it works on this tenant even though app registration is blocked.
 
-## 1. One-time Azure setup for OIDC (`deploy.yml`)
+## 1. Deploy on push — publish profile (used here)
 
-`deploy.yml` signs in to Azure with a **federated credential** (no stored client secret). You create an Entra
-app registration, add a federated credential trusting this repo, and grant it deploy rights. Run these once
-(you need permission to create app registrations and to assign roles).
+`deploy.yml` builds, tests, publishes, and deploys to the web app using its **publish profile** — a per-app
+credential, no Azure AD identity — so it works on this tenant even though app registration is blocked. Two
+one-time prerequisites:
+
+1. **Enable SCM basic auth** on the web app: Portal → the app → *Settings → Configuration → General settings →
+   SCM Basic Auth Publishing Credentials = On*. CLI: `az resource update -g rg-reorder-advisor --namespace
+   Microsoft.Web --resource-type basicPublishingCredentialsPolicies --name scm --parent sites/reorder-vmtiy7-web
+   --set properties.allow=true`.
+2. **Add the publish-profile secret:** Portal → the app → *Download publish profile* → paste the entire XML into a
+   GitHub secret named **`AZURE_WEBAPP_PUBLISH_PROFILE`**. CLI to fetch it: `az webapp deployment
+   list-publishing-profiles -g rg-reorder-advisor -n reorder-vmtiy7-web --xml`.
+
+App code only — infra (Bicep) changes are rare and still applied with `./scripts/deploy-infra.ps1` (Owner).
+
+### Alternative: OIDC (only if app registration is permitted)
+
+The original design used GitHub **OIDC** federated login. On this tenant `az ad app create` returns *Insufficient
+privileges*, so the publish profile above is used instead. If an admin grants your account the **Application
+Developer** Entra role, you can switch `deploy.yml` back to OIDC with these one-time commands + the five
+`AZURE_*` secrets:
 
 ```bash
 # Identifiers you'll need
@@ -43,29 +61,24 @@ az role assignment create --assignee "$APP_ID" --role Owner --scope "/subscripti
 echo "AZURE_CLIENT_ID=$APP_ID"; echo "AZURE_TENANT_ID=$TENANT_ID"; echo "AZURE_SUBSCRIPTION_ID=$SUB_ID"
 ```
 
-> **Managed-tenant note (applies here):** on the IIT Patna tenant, `az ad app create` returns *"Insufficient
-> privileges to complete the operation"* — regular users can't register apps, so **OIDC / `deploy.yml` cannot run
-> on this tenant**. `ci.yml` and `nightly.yml` are unaffected (both verified). Deploy with the manual scripts
-> instead — see [§4 Manual deploy fallback](#4-manual-deploy-fallback-oidc-blocked). To enable OIDC later, ask a
-> tenant admin to grant your account the **Application Developer** Entra role (or to create the app registration +
-> federated credential for you), then add the five `AZURE_*`/key secrets — no code changes needed.
+> These OIDC commands need permission to create an app registration and assign a subscription role — **not
+> available on this tenant** (`az ad app create` → *Insufficient privileges*). The publish-profile deploy above is
+> what runs here. If a hands-on deploy is ever needed (or to (re)deploy infra), see §4 below.
 
 ## 2. GitHub repository secrets
 
-Set these under **Settings → Secrets and variables → Actions**, or with the `gh` CLI:
+Set these under **Settings → Secrets and variables → Actions**. For the **publish-profile deploy + nightly** (what
+runs here) you need just three:
 
-```bash
-gh secret set AZURE_CLIENT_ID       --body "<appId from step 1>"
-gh secret set AZURE_TENANT_ID       --body "<tenantId>"
-gh secret set AZURE_SUBSCRIPTION_ID --body "<subscriptionId>"
-gh secret set JOB_KEY               --body "<your run-advisor key>"      # -> Security__JobKey (X-Job-Key)
-gh secret set ADMIN_KEY             --body "<your uploads key>"          # -> Security__AdminKey (X-Admin-Key)
-gh secret set WEBHOOK_URL           --body "<your Teams workflow URL>"   # -> Notifications__WebhookUrl
-gh secret set APP_URL               --body "https://reorder-vmtiy7-web.azurewebsites.net"
-```
+| Secret | Used by | Value |
+|---|---|---|
+| `AZURE_WEBAPP_PUBLISH_PROFILE` | `deploy.yml` | the app's downloaded publish-profile XML (whole file) |
+| `JOB_KEY` | `nightly.yml` | the `Security__JobKey` value (sent as `X-Job-Key`) |
+| `APP_URL` | `nightly.yml` | `https://reorder-vmtiy7-web.azurewebsites.net` |
 
-`JOB_KEY` / `ADMIN_KEY` / `WEBHOOK_URL` are passed to Bicep (via `REORDER_*` env vars) and become the web app's
-app settings on every deploy. `APP_URL` is used by the deploy smoke test and the nightly trigger.
+Only if you switch to the **OIDC alternative** do you also add `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`,
+`AZURE_SUBSCRIPTION_ID` (and, if that pipeline also runs Bicep, `ADMIN_KEY` / `WEBHOOK_URL`, passed to Bicep as
+`REORDER_*`).
 
 ## 3. Reproducibility drill (the Day 9 "done when")
 
@@ -77,8 +90,10 @@ Proves the whole environment rebuilds from an empty resource group. Resource nam
 # 1. Tear the environment down
 pwsh scripts/teardown.ps1 -Force            # az group delete --yes --no-wait
 
-# 2. Rebuild from scratch via the pipeline
-gh workflow run deploy.yml                   # or push to main; watch: gh run watch
+# 2. Rebuild infra + app from scratch with the scripts (deploy.yml is app-only — see §4)
+$env:REORDER_JOB_KEY = "<job key>"; $env:REORDER_ADMIN_KEY = "<admin key>"; $env:REORDER_WEBHOOK_URL = "<webhook>"
+./scripts/deploy-infra.ps1
+./scripts/deploy-app.ps1
 
 # 3. Re-upload a day of data (PowerShell 7 multipart)
 $asOf = "2026-09-05"
@@ -98,12 +113,15 @@ gh workflow run nightly.yml
 Then confirm `/health` returns 200, the dashboard shows the run, and a digest posts to Teams. Capture the
 **Cost Analysis** screenshot for the resource group while you're in the portal.
 
-## 4. Manual deploy fallback (OIDC blocked)
+> A from-empty rebuild recreates the web app, so its **publish profile changes** — re-download it and update the
+> `AZURE_WEBAPP_PUBLISH_PROFILE` secret before relying on `deploy.yml` again.
 
-`deploy.yml` needs an Entra app registration, which this tenant blocks. Until an admin enables it, deploy and run
-the reproducibility drill by hand — the same scripts `deploy.yml` would have called. You need `az login` (Owner on
-the subscription, which you have) and PowerShell 7. All three workflows still live in the repo; only `deploy.yml`
-is inert here.
+## 4. Manual deploy & infra (by hand)
+
+`deploy.yml` deploys app code automatically (publish profile). Use the scripts by hand when you need to
+**(re)deploy infra** (Bicep / app settings), run the **reproducibility drill** (teardown deletes the whole group),
+or deploy if the publish-profile path is ever unavailable. Needs `az login` (Owner on the subscription) and
+PowerShell 7.
 
 ```powershell
 # Deploy secrets -> env vars (Bicep reads these; use the values already on the app).

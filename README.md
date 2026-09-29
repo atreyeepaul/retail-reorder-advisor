@@ -167,14 +167,14 @@ Three GitHub Actions workflows:
 
 - **CI** ([`ci.yml`](.github/workflows/ci.yml)) — restore, build (warnings as errors), test with coverage, and
   the backtest gate, on every push and PR.
-- **Deploy** ([`deploy.yml`](.github/workflows/deploy.yml)) — on push to `main`, `azure/login` via OIDC → Bicep +
-  app deploy → smoke-test `/health`.
+- **Deploy** ([`deploy.yml`](.github/workflows/deploy.yml)) — on push to `main`, builds + tests, then deploys the
+  app to Azure App Service via its **publish profile**, and smoke-tests `/health` (app code only).
 - **Nightly** ([`nightly.yml`](.github/workflows/nightly.yml)) — `cron: '30 20 * * *'` (02:00 IST) triggers a run
   against the live app, with retries for the F1 cold start.
 
-> **OIDC note:** `deploy.yml` needs an Entra app registration, which is blocked on the tenant this project runs in,
-> so deploys are done with the scripts above. `ci.yml` and `nightly.yml` are unaffected. How to enable OIDC:
-> [`docs/day-09.md`](docs/day-09.md) §1.
+> **Deploy auth:** this tenant blocks Entra app registration, so `deploy.yml` authenticates with the App Service
+> **publish profile** (a per-app secret) instead of OIDC. Infra (Bicep) changes are applied manually with the
+> scripts above. Setup + the OIDC alternative: [`docs/day-09.md`](docs/day-09.md).
 
 > **Scheduler caveats:** GitHub can start scheduled runs several minutes late, and disables scheduled workflows
 > after 60 days of repository inactivity (a commit re-enables them).
