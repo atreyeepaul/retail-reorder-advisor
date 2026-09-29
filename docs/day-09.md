@@ -43,9 +43,12 @@ az role assignment create --assignee "$APP_ID" --role Owner --scope "/subscripti
 echo "AZURE_CLIENT_ID=$APP_ID"; echo "AZURE_TENANT_ID=$TENANT_ID"; echo "AZURE_SUBSCRIPTION_ID=$SUB_ID"
 ```
 
-> Managed-tenant note: if app-registration creation or the subscription-scope Owner assignment is blocked by
-> your organization, `deploy.yml` can't run — keep deploying with the manual scripts (`./scripts/deploy-infra.ps1`
-> then `./scripts/deploy-app.ps1`). `ci.yml` and `nightly.yml` are unaffected.
+> **Managed-tenant note (applies here):** on the IIT Patna tenant, `az ad app create` returns *"Insufficient
+> privileges to complete the operation"* — regular users can't register apps, so **OIDC / `deploy.yml` cannot run
+> on this tenant**. `ci.yml` and `nightly.yml` are unaffected (both verified). Deploy with the manual scripts
+> instead — see [§4 Manual deploy fallback](#4-manual-deploy-fallback-oidc-blocked). To enable OIDC later, ask a
+> tenant admin to grant your account the **Application Developer** Entra role (or to create the app registration +
+> federated credential for you), then add the five `AZURE_*`/key secrets — no code changes needed.
 
 ## 2. GitHub repository secrets
 
@@ -94,6 +97,47 @@ gh workflow run nightly.yml
 
 Then confirm `/health` returns 200, the dashboard shows the run, and a digest posts to Teams. Capture the
 **Cost Analysis** screenshot for the resource group while you're in the portal.
+
+## 4. Manual deploy fallback (OIDC blocked)
+
+`deploy.yml` needs an Entra app registration, which this tenant blocks. Until an admin enables it, deploy and run
+the reproducibility drill by hand — the same scripts `deploy.yml` would have called. You need `az login` (Owner on
+the subscription, which you have) and PowerShell 7. All three workflows still live in the repo; only `deploy.yml`
+is inert here.
+
+```powershell
+# Deploy secrets -> env vars (Bicep reads these; use the values already on the app).
+$env:REORDER_JOB_KEY     = "<job key>"
+$env:REORDER_ADMIN_KEY   = "<admin key>"
+$env:REORDER_WEBHOOK_URL = "<teams workflow url>"
+
+az login
+./scripts/deploy-infra.ps1     # az group create + Bicep (sets all app settings)
+./scripts/deploy-app.ps1       # publish, zip-deploy, smoke-test /health
+```
+
+**Manual reproducibility drill** (the Day 9 "done when", by hand):
+
+```powershell
+# 1. Tear down and wait for the delete to finish
+./scripts/teardown.ps1 -Force
+az group wait --deleted --resource-group rg-reorder-advisor
+
+# 2. Rebuild from empty (env vars from above still set)
+./scripts/deploy-infra.ps1
+./scripts/deploy-app.ps1
+
+# 3. Re-upload a day and run the advisor
+$asOf = "2026-09-05"
+$form = @{ sales = Get-Item "data/$asOf/sales.csv"; inventory = Get-Item "data/$asOf/inventory.csv"; suppliers = Get-Item "data/$asOf/suppliers.csv" }
+$base = "https://reorder-vmtiy7-web.azurewebsites.net"
+Invoke-RestMethod -Method Post -Uri "$base/api/uploads?asOf=$asOf" -Headers @{ "X-Admin-Key" = $env:REORDER_ADMIN_KEY } -Form $form
+Invoke-RestMethod -Method Post -Uri "$base/api/jobs/run-advisor?asOf=$asOf" -Headers @{ "X-Job-Key" = $env:REORDER_JOB_KEY }
+```
+
+Because resource names come from `uniqueString(resourceGroup().id)`, the rebuilt environment keeps the **same names
+and URL**. Confirm `/health` = 200, the dashboard shows the run, and a digest posts to Teams; grab the Cost
+Analysis screenshot.
 
 ## Scheduler caveats (worth knowing)
 
